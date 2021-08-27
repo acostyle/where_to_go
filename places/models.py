@@ -19,7 +19,7 @@ class PlaceImage(models.Model):
     place = models.ForeignKey(
         Place,
         on_delete=models.CASCADE,
-        related_name="place",
+        related_name="place_images",
         verbose_name="Место",
         )
     url = models.ImageField("Изображение места", upload_to="place_images")
