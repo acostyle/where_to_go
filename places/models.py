@@ -23,6 +23,10 @@ class PlaceImage(models.Model):
         verbose_name="Место",
         )
     url = models.ImageField("Изображение места", upload_to="place_images")
+    position = models.PositiveIntegerField("Позиция", null=True, unique=True)
     
+    class Meta(object):
+        ordering = ['position']
+
     def __str__(self):
         return f"{self.id} - {str(self.place)}"
