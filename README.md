@@ -48,5 +48,5 @@ Open https://127.0.0.1:8000 in your browser.
 ```
 - Run the following command
 ```
-python3 manage.py load_place [link to the new place JSON file]
+python3 manage.py load_place [link to the new place JSON     file]
 ```
