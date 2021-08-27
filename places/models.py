@@ -11,7 +11,7 @@ class Place(models.Model):
     longitude = models.FloatField("Долгота", null=True, blank=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.id} - {self.title}"
 
 
 class PlaceImage(models.Model):
