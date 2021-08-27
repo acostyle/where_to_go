@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.urls import reverse
 
 from places.models import Place, PlaceImage
 
@@ -22,7 +23,7 @@ def generate_place_info(request):
                 "properties": {
                     "title": place.title,
                     "placeId": place.id,
-                    "detailsUrl": "",
+                    "detailsUrl": reverse('get_place_id', args=[place.id]),
                 }
             }
         )
