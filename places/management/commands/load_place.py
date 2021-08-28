@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.core.files.base import ContentFile
-from places.models import Image, Place
+from places.models import PlaceImage, Place
+
 import requests
 import os
 
@@ -20,22 +21,23 @@ class Command(BaseCommand):
             title=new_place['title'],
             description_short=new_place['description_short'],
             description_long=new_place['description_long'],
-            latitude=new_place['coordinates']['latitude'],
-            longitude=new_place['coordinates']['longitude'],
+            latitude=new_place['coordinates']['lat'],
+            longitude=new_place['coordinates']['lng'],
+            
         )
 
         image_files = os.listdir('media/')
         for image in image_files:
             if image.startswith(place.title.replace(' ', '_')):
                 os.remove(f'media/{image}')
-        old_images_in_db = Image.objects.filter(place=place)
+        old_images_in_db = PlaceImage.objects.filter(place=place)
         old_images_in_db.delete()
 
         for picture_number, image_url in enumerate(new_place['imgs']):
             response = requests.get(image_url)
             response.raise_for_status()
-            image = Image.objects.create(place=place)
-            image.image.save(
+            image = PlaceImage.objects.create(place=place)
+            image.url.save(
                 f'{place.title}_{picture_number}.jpg',
                 ContentFile(response.content),
                 save=True
