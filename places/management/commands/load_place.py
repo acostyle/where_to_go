@@ -37,7 +37,7 @@ class Command(BaseCommand):
             response = requests.get(image_url)
             response.raise_for_status()
             image = PlaceImage.objects.create(place=place)
-            image.url.save(
+            image.image.save(
                 f'{place.title}_{picture_number}.jpg',
                 ContentFile(response.content),
                 save=True
