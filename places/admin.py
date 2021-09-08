@@ -12,7 +12,8 @@ class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
 
     def get_preview(self, instance):
         return format_html(
-            f'<img style="max-width: 200px;" src="{instance.image.url}"/>'
+            '<img style="max-width: 200px;" src="{}"/>',
+            instance.image.url
         )
 
 
