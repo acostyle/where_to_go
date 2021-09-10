@@ -37,7 +37,7 @@ class PlaceImage(models.Model):
         related_name="place_images",
         verbose_name="Место",
         )
-    image = models.ImageField("Изображение места", upload_to="place_images")
+    image = models.ImageField("Изображение места", upload_to="")
     position = models.PositiveIntegerField("Позиция", db_index=True)
 
     class Meta(object):

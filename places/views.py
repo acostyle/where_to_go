@@ -23,7 +23,9 @@ def show_index(request):
                 "properties": {
                     "title": place.title,
                     "placeId": place.id,
-                    "detailsUrl": reverse('show_place_details', args=[place.id]),
+                    "detailsUrl": reverse(
+                        'show_place_details', args=[place.id]
+                    ),
                 }
             }
         )
@@ -42,8 +44,8 @@ def show_place_details(request, place_id):
     place_parameters = {
         "title": place.title,
         "imgs": [place_image.image.url for place_image in places_images],
-        "description_short": place.description_short,
-        "description_long": place.description_long,
+        "description_short": place.short_description,
+        "description_long": place.long_description,
         "coordinates": {"lng": place.longitude, "lat": place.latitude}
     }
 
