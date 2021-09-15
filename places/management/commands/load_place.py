@@ -9,7 +9,6 @@ import os
 class Command(BaseCommand):
     help = 'Load a Place from JSON'
 
-
     def add_arguments(self, parser):
         parser.add_argument('json', help='Place JSON URL')
 
@@ -19,35 +18,37 @@ class Command(BaseCommand):
         response.raise_for_status()
         new_place = response.json()
 
-        place, created = Place.objects.update_or_create(
+        place_to_save = {}
+        place_to_save['short_description'] = new_place['description_short']
+        place_to_save['long_description'] = new_place['description_long']
+        place_to_save['latitude'] = new_place['coordinates']['lat']
+        place_to_save['longitude'] = new_place['coordinates']['lng']
+
+        place, place_created = Place.objects.update_or_create(
             title=new_place['title'],
-            short_description=new_place['description_short'],
-            long_description=new_place['description_long'],
-            latitude=new_place['coordinates']['lat'],
-            longitude=new_place['coordinates']['lng'],
-            
+            defaults = place_to_save
         )
 
-        image_files = os.listdir(settings.MEDIA_ROOT)
-        for image in image_files:
-            if image.startswith(place.title.replace(' ', '_')):
-                os.remove(f'media/{image}')
+        if place_created:
+            for picture_number, image_url in enumerate(new_place['imgs']):
+                response = requests.get(image_url)
+                response.raise_for_status()
+                image, image_created = PlaceImage.objects.update_or_create(
+                    place=place,
+                    position=picture_number
+                )
+                image.image.save(
+                    f'{place.title}_{picture_number}.jpg',
+                    ContentFile(response.content),
+                    save=True
+                )
 
-        old_images_in_db = PlaceImage.objects.filter(place=place)
-        old_images_in_db.delete()
 
-        for picture_number, image_url in enumerate(new_place['imgs']):
-            response = requests.get(image_url)
-            response.raise_for_status()
-            image = PlaceImage.objects.create(place=place, position=picture_number)
-            image.image.save(
-                f'{place.title}_{picture_number}.jpg',
-                ContentFile(response.content),
-                save=True
-            )
-        if created:
+            
+
+        if place_created and image_created:
             self.stdout.write(f'New place {place.title} has been loaded.')
-        else:
+        if not place_created: 
             self.stdout.write(
                 f'The place {place.title} already exists, all photos have been replaced.'
-            )
+            )           

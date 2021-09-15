@@ -1,12 +1,11 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="ru">
+{% load static %}
 <head>
   <meta charset="utf-8">
   <title>Куда пойти — Москва глазами Артёма</title>
 
-  <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/png">
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -39,17 +38,11 @@
       width: 100px;
     }
   </style>
-  
 
   {{ places|json_script:"places-geojson" }}
-  <script id="places-geojson" type="application/json"></script>
 
-</head>
-<body>
-
-  <div id="sidebar">
-    <div id="sidebar-app" v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
-
+  <script id="app-template" type="text/template">
+    <div v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
       <div v-if="promptVisible" class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
         <img class="d-block select-place-prompt mb-4" src="{% static 'hand-pointer-regular.svg' %}" alt="Select place">
         <h4>Выберите место на карте</h4>
@@ -65,11 +58,9 @@
 
         <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 rounded" v-bind:alt="selectedPlace.title">
 
-        {% verbatim %}
-          <h5 class="mb-3">{{ selectedPlace.title }}</h5>
+        <h5 class="mb-3">{% verbatim %}{{ selectedPlace.title }}{% endverbatim %}</h5>
 
-          <p>{{ selectedPlace.short_description }}</p>
-        {% endverbatim %}
+        <p>{% verbatim %}{{ selectedPlace.short_description }}{% endverbatim %}</p>
 
         <div id="place-photos" class="carousel slide mb-3 shadow" data-ride="carousel" data-interval="5000">
           <ol class="carousel-indicators">
@@ -99,6 +90,12 @@
         <div v-html="selectedPlace.long_description"></div>
       </div>
     </div>
+  </script>
+
+</head>
+<body>
+  <div id="sidebar">
+    <div id="sidebar-app"></div>
   </div>
 
   <div id="map"></div>
@@ -127,8 +124,6 @@
       position: 'right'
     });
     map.addControl(sidebar);
-
-    sidebar.show();
 
     // FIXME should be hidden in production mode
     L.control.custom({
@@ -204,6 +199,7 @@
 
     var sidebarApp = new Vue({
       el: '#sidebar-app',
+      template: document.getElementById('app-template').innerHTML,
       data: {
         loadingPlaceId: null,
         selectedPlace: null,  // object with attributes specified below

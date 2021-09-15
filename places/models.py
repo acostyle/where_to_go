@@ -38,7 +38,7 @@ class PlaceImage(models.Model):
         verbose_name="Место",
         )
     image = models.ImageField("Изображение места", upload_to="")
-    position = models.PositiveIntegerField("Позиция", db_index=True)
+    position = models.PositiveIntegerField("Позиция", db_index=True, null=True, blank=True)
 
     class Meta(object):
         ordering = ['position']
