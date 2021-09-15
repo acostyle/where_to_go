@@ -1,6 +1,7 @@
 # Where to go
 
 "Where to go" is a web application where points of interest are marked on an interactive map of Moscow. By clicking on them, you can see more information, photos, and contacts. 
+You can check this out here: [Link](http://acostyle.pythonanywhere.com)
 
 ### How to run
 Python3 should be already installed. 
@@ -48,5 +49,5 @@ Open https://127.0.0.1:8000 in your browser.
 ```
 - Run the following command
 ```
-python3 manage.py load_place [link to the new place JSON     file]
+python3 manage.py load_place [link to the new place JSON file]
 ```
