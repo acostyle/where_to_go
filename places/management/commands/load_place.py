@@ -1,9 +1,8 @@
+import requests
+
 from django.core.management.base import BaseCommand
 from django.core.files.base import ContentFile
 from places.models import PlaceImage, Place
-from django.conf import settings
-import requests
-import os
 
 
 class Command(BaseCommand):
@@ -43,11 +42,9 @@ class Command(BaseCommand):
                     save=True
                 )
 
-
-            
-
         if place_created and image_created:
             self.stdout.write(f'New place {place.title} has been loaded.')
+
         if not place_created: 
             self.stdout.write(
                 f'The place {place.title} already exists, all photos have been replaced.'
